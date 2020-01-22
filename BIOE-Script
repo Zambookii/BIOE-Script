@@ -1,0 +1,154 @@
+#----------------------------------------------------------------------------------------------------------
+#--Created By: Jesse Palasz                                                                               -
+#--Created for: Bioengineering department at UIC                                                          -
+#--Contact: jessepalasz21@gmail.com                                                                       -
+#--What the script does: The user inputs a url and the source code is copied over to the seminar ad file. -
+#--Note: Make sure script is placed in the same folder as destination_file.                               -
+#----------------------------------------------------------------------------------------------------------
+
+$destination_file = ".\bk-seminar-ad-html.html"
+
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName PresentationCore,PresentationFramework
+[System.Windows.Forms.Application]::EnableVisualStyles()
+
+function Try-WebRequest-Replace($arg1) {
+    try {
+        $web_url_content = (Invoke-WebRequest $arg1).Content
+    } catch {
+        [System.Windows.MessageBox]::Show($Message_OkFailed_Body,$Message_OkFailed_Title,$Message_OkFailed,$Message_OkFailed_Icon)
+        Write-Warning -Message "Failed to update file"        
+    }
+    if($web_url_content) {
+        Set-Content -Path $destination_file -Value $web_url_content
+        [System.Windows.MessageBox]::Show($Message_Ok_Body,$Message_Ok_Title,$Message_Ok)
+    }
+}
+
+$Website_Script                  = New-Object system.Windows.Forms.Form
+$Website_Script.ClientSize       = '522,210'
+$Website_Script.text             = "Website Script"
+$Website_Script.BackColor        = "#c2c2c2"
+$Website_Script.TopMost          = $false
+$Website_Script.FormBorderStyle  = 'FixedDialog'
+$Website_Script.MaximizeBox      = $false
+$Website_Script.StartPosition    = "CenterScreen"
+
+$User_Input_URL                  = New-Object system.Windows.Forms.TextBox
+$User_Input_URL.multiline        = $false
+$User_Input_URL.width            = 495
+$User_Input_URL.height           = 20
+$User_Input_URL.location         = New-Object System.Drawing.Point(14,145)
+$User_Input_URL.Font             = 'Microsoft Sans Serif,10'
+
+$Button_Proceed                  = New-Object system.Windows.Forms.Button
+$Button_Proceed.BackColor        = "#84E617"
+$Button_Proceed.text             = "Proceed"
+$Button_Proceed.width            = 122
+$Button_Proceed.height           = 30
+$Button_Proceed.location         = New-Object System.Drawing.Point(12,175)
+$Button_Proceed.Font             = 'MS Reference Sans Serif,10,style=Bold'
+$Button_Proceed.ForeColor        = "#000000"
+
+$Button_Exit                     = New-Object system.Windows.Forms.Button
+$Button_Exit.BackColor           = "#D21D1D"
+$Button_Exit.text                = "Exit"
+$Button_Exit.width               = 122
+$Button_Exit.height              = 30
+$Button_Exit.location            = New-Object System.Drawing.Point(142,175)
+$Button_Exit.Font                = 'MS Reference Sans Serif,10,style=Bold'
+$Button_Exit.ForeColor           = "#000000"
+
+$Label_EnterURL                  = New-Object system.Windows.Forms.Label
+$Label_EnterURL.text             = "Enter URL:"
+$Label_EnterURL.AutoSize         = $true
+$Label_EnterURL.width            = 25
+$Label_EnterURL.height           = 10
+$Label_EnterURL.location         = New-Object System.Drawing.Point(11,122)
+$Label_EnterURL.Font             = 'Microsoft Sans Serif,10'
+$Label_EnterURL.ForeColor        = "#D21D1D"
+
+$Label_Instr_Title               = New-Object system.Windows.Forms.Label
+$Label_Instr_Title.text          = "Instructions: "
+$Label_Instr_Title.AutoSize      = $true
+$Label_Instr_Title.width         = 25
+$Label_Instr_Title.height        = 10
+$Label_Instr_Title.location      = New-Object System.Drawing.Point(11,75)
+$Label_Instr_Title.Font          = 'Microsoft Sans Serif,10'
+$Label_Instr_Title.ForeColor     = "#D21D1D"
+
+$Label_Instr_Content             = New-Object system.Windows.Forms.Label
+$Label_Instr_Content.text        = "Copy paste the entire URL that you would like to transfer to the seminar ad."
+$Label_Instr_Content.AutoSize    = $true
+$Label_Instr_Content.width       = 25
+$Label_Instr_Content.height      = 10
+$Label_Instr_Content.location    = New-Object System.Drawing.Point(11,95)
+$Label_Instr_Content.Font        = 'Microsoft Sans Serif,9'
+
+$Label_About_Title               = New-Object system.Windows.Forms.Label
+$Label_About_Title.text          = "About:"
+$Label_About_Title.AutoSize      = $true
+$Label_About_Title.width         = 25
+$Label_About_Title.height        = 10
+$Label_About_Title.location      = New-Object System.Drawing.Point(11,7)
+$Label_About_Title.Font          = 'Microsoft Sans Serif,10'
+$Label_About_Title.ForeColor     = "#D21D1D"
+
+$Label_About_Content1            = New-Object system.Windows.Forms.Label
+$Label_About_Content1.text       = "When you enter a URL, the script takes the source code from the given"
+$Label_About_Content1.AutoSize   = $true
+$Label_About_Content1.width      = 25
+$Label_About_Content1.height     = 10
+$Label_About_Content1.location   = New-Object System.Drawing.Point(11,30)
+$Label_About_Content1.Font       = 'Microsoft Sans Serif,9'
+
+$Label_About_Content2            = New-Object system.Windows.Forms.Label
+$Label_About_Content2.text       = "website and replaces the current seminar ad file."
+$Label_About_Content2.AutoSize   = $true
+$Label_About_Content2.width      = 25
+$Label_About_Content2.height     = 10
+$Label_About_Content2.location   = New-Object System.Drawing.Point(11,52)
+$Label_About_Content2.Font       = 'Microsoft Sans Serif,9'
+
+$Label_CreatedBy                 = New-Object system.Windows.Forms.Label
+$Label_CreatedBy.text            = "Created by: Jesse Palasz"
+$Label_CreatedBy.AutoSize        = $true
+$Label_CreatedBy.width           = 25
+$Label_CreatedBy.height          = 10
+$Label_CreatedBy.location        = New-Object System.Drawing.Point(365,190)
+$Label_CreatedBy.Font            = 'Microsoft Sans Serif,8'
+
+$ToolTip1                        = New-Object system.Windows.Forms.ToolTip
+$ToolTip1.isBalloon              = $true
+$ToolTip1.SetToolTip($Button_Proceed,'Submit URL to copy source code to seminar ad')
+$ToolTip1.SetToolTip($Button_Exit,'Quit the script')
+$ToolTip1.SetToolTip($User_Input_URL,'Enter the URL to grab the source code from')
+
+$Message_YesNo = [System.Windows.MessageBoxButton]::YesNo
+$Message_AreYouSure_Icon = [System.Windows.MessageBoxImage]::Warning
+$Message_AreYouSure_Title = "Confirm"
+$Message_AreYouSure_Body = "Are you sure you want to replace the seminar ad file with this URL?"
+
+$Message_Ok = [System.Windows.MessageBoxButton]::Ok
+$Message_Ok_Title = "Success!"
+$Message_Ok_Body = "The url content has been successfully transfered over."
+
+$Message_OkFailed = [System.Windows.MessageBoxButton]::Ok
+$Message_OkFailed_Icon = [System.Windows.MessageBoxImage]::Warning
+$Message_OkFailed_Title = "Failed"
+$Message_OkFailed_Body = "Failed to update seminar file."
+
+$Button_Proceed.Add_Click({
+    $result = [System.Windows.MessageBox]::Show($Message_AreYouSure_Body,$Message_AreYouSure_Title,$Message_YesNo,$Message_AreYouSure_Icon)
+    if($result -eq "Yes") {
+        Try-WebRequest-Replace($User_Input_URL.Text)
+        $User_Input_URL.Clear()
+    }
+})
+
+$Button_Exit.Add_Click({
+    $Website_Script.Close()
+})
+
+$Website_Script.controls.AddRange(@($User_Input_URL,$Button_Proceed,$Button_Exit,$Label_EnterURL,$Label_Instr_Content,$Label_Instr_Title,$Label_CreatedBy,$Label_About_Title,$Label_About_Content1,$Label_About_Content2))
+$Website_Script.ShowDialog()
